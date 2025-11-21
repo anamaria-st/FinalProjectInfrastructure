@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cute Plant Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fuente similar (redondeadita) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="page">
+    <div class="left-panel">
+      <img
+        src="{{ url_for('static', filename='img/Plant.PNG') }}"
+        alt="Cute growing plant"
+        class="plant-image"
+      >
+    </div>
+
+    <div class="right-panel">
+      <div class="login-card">
+        <form method="POST" class="login-form">
+          <div class="field-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+            >
+          </div>
+
+          <div class="field-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+            >
+          </div>
+
+          {% if error %}
+          <p class="error-msg">{{ error }}</p>
+          {% elif success %}
+          <p class="success-msg">Logged in successfully 🌱</p>
+          {% endif %}
+
+          <button type="submit" class="btn-login">Log In</button>
+        </form>
+
+        <div class="register">
+          <p>I don't have an account</p>
+          <a href="#">Register now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
