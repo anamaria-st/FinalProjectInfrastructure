@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="page">
+    <!-- puedes reutilizar la parte izquierda del login con la imagen -->
+    <div class="right-panel">
+      <div class="login-card">
+        <form method="POST" class="login-form">
+          <div class="field-group">
+            <a class="username">
+            <span class="icon">👤</span> {{ session["username"] }}
+            </a>
+
+            <input id="username" name="username" required>
+          </div>
+
+          <div class="field-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+
+          {% if error %}
+          <p class="error-msg">{{ error }}</p>
+          {% endif %}
+
+          <button type="submit" class="btn-login">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

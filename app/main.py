@@ -1,4 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+)
+from .models import db, User, Habit
 
 bp = Blueprint("main", __name__)
 
@@ -8,17 +16,228 @@ def index():
     return redirect(url_for("main.login"))
 
 
+@bp.route("/register", methods=["GET", "POST"])
+def register():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+
+        if not username or not password:
+            error = "Username and password are required"
+        elif User.query.filter_by(username=username).first():
+            error = "Username already exists"
+        else:
+            user = User(username=username)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            # Auto login después de registrarse
+            session["user_id"] = user.id
+            return redirect(url_for("main.dashboard"))
+
+    return render_template("register.html", error=error)
+
+
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     error = None
     if request.method == "POST":
-        username = request.form.get("username", "")
-        password = request.form.get("password", "")
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
 
-        # Lógica de ejemplo: usuario / password fijos
-        if username == "admin" and password == "secret":
-            return render_template("login.html", success=True)
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            session["user_id"] = user.id
+            session["username"] = user.username
+            return redirect(url_for("main.dashboard"))
         else:
             error = "Invalid username or password"
 
     return render_template("login.html", error=error)
+
+
+@bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("main.login"))
+
+
+def current_user():
+    uid = session.get("user_id")
+    if uid is None:
+        return None
+    return User.query.get(uid)
+
+
+def login_required():
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+
+@bp.route("/dashboard")
+def dashboard():
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    return render_template("dashboard.html")
+
+
+@bp.route("/habits/<category>")
+def habits_by_category(category):
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+    if user is None:
+        return redirect(url_for("main.login"))
+
+    valid_categories = {
+        "physical": "Physical health",
+        "mental": "Mental",
+        "social": "Social",
+        "hobbies": "Hobbies",
+    }
+    if category not in valid_categories:
+        return redirect(url_for("main.dashboard"))
+
+    # Obtener hábitos de ese usuario y categoría
+    habits = (
+        Habit.query.filter_by(user_id=user.id, category=category)
+        .order_by(Habit.id.asc())
+        .all()
+    )
+
+    # Mapear iconos según categoría (ajusta nombres de archivo)
+    icon_map = {
+        "physical": "cardio.png",
+        "mental": "mental.png",
+        "social": "social.png",
+        "hobbies": "hobbies.png",
+    }
+
+    return render_template(
+        "habits_list.html",
+        category=category,
+        category_label=valid_categories[category],
+        icon_filename=icon_map[category],
+        habits=habits,
+    )
+
+
+# Ruta simple para crear un hábito de ejemplo (puedes añadir un formulario más adelante)
+@bp.route("/habits/<category>/add", methods=["POST"])
+def add_habit(category):
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+    name = request.form.get("name", "Example text loremipsum")
+    periodicity = request.form.get("periodicity", "every week")
+    frequency = request.form.get("frequency", "Monday")
+
+    habit = Habit(
+        user_id=user.id,
+        category=category,
+        name=name,
+        periodicity=periodicity,
+        frequency=frequency,
+    )
+    db.session.add(habit)
+    db.session.commit()
+
+    return redirect(url_for("main.habits_by_category", category=category))
+
+@bp.route("/habits/<category>/new", methods=["GET", "POST"])
+def new_habit(category):
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+
+    valid_categories = {
+        "physical": "Physical health",
+        "mental": "Mental",
+        "social": "Social",
+        "hobbies": "Hobbies",
+    }
+
+    if category not in valid_categories:
+        return redirect(url_for("main.dashboard"))
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        periodicity = request.form.get("periodicity")
+        frequency = request.form.get("frequency")
+        category_from_form = request.form.get("category")
+
+        habit = Habit(
+            user_id=user.id,
+            category=category_from_form,
+            name=name,
+            periodicity=periodicity,
+            frequency=frequency,
+        )
+        db.session.add(habit)
+        db.session.commit()
+
+        return redirect(url_for("main.habits_by_category", category=category_from_form))
+
+    return render_template(
+        "habit_form.html",
+        mode="new",
+        category=category,
+        category_label=valid_categories[category],
+    )
+
+@bp.route("/habits/<int:habit_id>/edit", methods=["GET", "POST"])
+def edit_habit(habit_id):
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+    habit = Habit.query.filter_by(id=habit_id, user_id=user.id).first()
+
+    if not habit:
+        return redirect(url_for("main.dashboard"))
+
+    if request.method == "POST":
+        habit.name = request.form.get("name")
+        habit.category = request.form.get("category")
+        habit.periodicity = request.form.get("periodicity")
+        habit.frequency = request.form.get("frequency")
+
+        db.session.commit()
+        return redirect(url_for("main.habits_by_category", category=habit.category))
+
+    # GET → mostrar formulario con los datos previos
+    valid_categories = {
+        "physical": "Physical health",
+        "mental": "Mental",
+        "social": "Social",
+        "hobbies": "Hobbies",
+    }
+
+    return render_template(
+        "habit_form.html",
+        mode="edit",
+        habit=habit,
+        category=habit.category,
+        category_label=valid_categories[habit.category],
+    )
+
+
+@bp.route("/habits/<int:habit_id>/delete")
+def delete_habit(habit_id):
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+    habit = Habit.query.filter_by(id=habit_id, user_id=user.id).first()
+
+    if habit:
+        db.session.delete(habit)
+        db.session.commit()
+
+    return redirect(url_for("main.habits_by_category", category=habit.category))
+

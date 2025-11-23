@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+
+<body>
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar expanded">
+      <button id="toggle-btn" class="toggle-btn">☰</button>
+
+      <div class="user-section">
+        <div class="avatar"></div>
+        <a class="username">
+        <span class="icon">👤</span> {{ session["username"] }}
+        </a>
+
+      </div>
+
+      <nav class="menu">
+        <a class="menu-item active">✔ My habits</a>
+        <a class="menu-item">📅 Calendar</a>
+      </nav>
+      <a class="menu-item logout" href="{{ url_for('main.logout') }}">🚪 Logout</a>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-area">
+
+      <button class="new-habit-btn">+ New habit</button>
+
+      <div class="grid">
+
+        <a href="{{ url_for('main.habits_by_category', category='physical') }}" class="card">
+          <h3>Physical health</h3>
+          <img src="{{ url_for('static', filename='img/cardio.png') }}">
+        </a>
+
+        <a href="{{ url_for('main.habits_by_category', category='mental') }}" class="card">
+          <h3>Mental</h3>
+          <img src="{{ url_for('static', filename='img/mental.png') }}">
+        </a>
+
+        <a href="{{ url_for('main.habits_by_category', category='social') }}" class="card">
+          <h3>Social</h3>
+          <img src="{{ url_for('static', filename='img/social.png') }}">
+        </a>
+
+        <a href="{{ url_for('main.habits_by_category', category='hobbies') }}" class="card">
+          <h3>Hobbies</h3>
+          <img src="{{ url_for('static', filename='img/hobbies.png') }}">
+        </a>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById("toggle-btn");
+    const sidebar = document.getElementById("sidebar");
+
+    btn.onclick = () => {
+      sidebar.classList.toggle("collapsed");
+      sidebar.classList.toggle("expanded");
+    };
+  </script>
+
+</body>
+</html>

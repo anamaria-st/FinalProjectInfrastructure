@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ category_label }} habits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/habits.css') }}">
+</head>
+
+<body>
+  <div class="layout">
+
+    <!-- Sidebar igual que en dashboard -->
+    <aside id="sidebar" class="sidebar expanded">
+      <button id="toggle-btn" class="toggle-btn">☰</button>
+
+      <div class="user-section">
+        <div class="avatar"></div>
+        <a class="username">Username</a>
+      </div>
+
+      <nav class="menu">
+        <a class="menu-item active">✔ My habits</a>
+        <a class="menu-item">📅 Calendar</a>
+      </nav>
+    </aside>
+
+    <main class="main-area habits-page">
+
+        <button class="back-btn"> <a href="{{ url_for('main.dashboard') }}" class="back-btn">← Back</a>
+        </button>
+      <button class="new-habit-btn"><a href="{{ url_for('main.new_habit', category=category) }}" class="new-habit-btn">
+  + New habit
+</a>
+</button>
+
+      <div class="habits-box">
+        <div class="habits-header">
+          <img
+            src="{{ url_for('static', filename='img/' + icon_filename) }}"
+            alt="{{ category_label }} icon"
+            class="habits-icon"
+          >
+          <span class="habits-title-right">{{ category_label }}</span>
+        </div>
+
+        <div class="habits-list">
+
+          {% for habit in habits %}
+          <div class="habit-row {% if loop.first %}habit-row-highlight{% endif %}">
+            <div class="habit-name">{{ habit.name }}</div>
+            <div class="habit-periodicity">{{ habit.periodicity }}</div>
+            <div class="habit-frequency">{{ habit.frequency }}</div>
+            <div class="habit-actions">
+            <a href="{{ url_for('main.edit_habit', habit_id=habit.id) }}" class="btn-icon edit">✏️</a>
+            <a href="{{ url_for('main.delete_habit', habit_id=habit.id) }}" class="btn-icon delete">🗑️</a>
+            </div>
+          </div>
+          {% else %}
+          <p class="no-habits">No habits yet for this category. Add one above 🐣</p>
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <!-- Botón rápido para añadir un hábito de prueba -->
+      <form
+        method="POST"
+        action="{{ url_for('main.add_habit', category=category) }}"
+        class="quick-add-form"
+      >
+        <input type="hidden" name="name" value="Example text loremipsum">
+        <input type="hidden" name="periodicity" value="every week">
+        <input type="hidden" name="frequency" value="Monday">
+      </form>
+
+    </main>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById("toggle-btn");
+    const sidebar = document.getElementById("sidebar");
+
+    btn.onclick = () => {
+      sidebar.classList.toggle("collapsed");
+      sidebar.classList.toggle("expanded");
+    };
+  </script>
+</body>
+</html>

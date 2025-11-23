@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ 'New ' + category_label + ' habit' if mode=='new' else 'Edit habit' }}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/habit_form.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar actualizado -->
+  <aside id="sidebar" class="sidebar expanded">
+    <button id="toggle-btn" class="toggle-btn">☰</button>
+
+    <div class="user-section">
+      <div class="avatar"></div>
+      <a class="username">{{ session['username'] }}</a>
+    </div>
+
+    <nav class="menu">
+      <a class="menu-item active" href="{{ url_for('main.dashboard') }}">✔ My habits</a>
+      <a class="menu-item" href="#">📅 Calendar</a>
+      <a class="menu-item logout" href="{{ url_for('main.logout') }}">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="form-area">
+
+    <div class="modal-box">
+
+      <div class="modal-header">
+        {{ 'New ' + category_label + ' habit' if mode=='new' else 'Edit habit' }}
+      </div>
+
+      <form method="POST" class="habit-form">
+
+        <label>Habit description</label>
+        <input
+          type="text"
+          name="name"
+          value="{{ habit.name if mode=='edit' else '' }}"
+          required
+        >
+
+        <label>Category</label>
+        <select name="category" required>
+          <option value="physical" {% if mode=='edit' and habit.category=='physical' %}selected{% endif %}>Physical health</option>
+          <option value="mental" {% if mode=='edit' and habit.category=='mental' %}selected{% endif %}>Mental</option>
+          <option value="social" {% if mode=='edit' and habit.category=='social' %}selected{% endif %}>Social</option>
+          <option value="hobbies" {% if mode=='edit' and habit.category=='hobbies' %}selected{% endif %}>Hobbies</option>
+        </select>
+
+        <label>Periodicity</label>
+        <select name="periodicity" required>
+          <option value="everyday">Every day</option>
+          <option value="every week">Every week</option>
+          <option value="every month">Every month</option>
+        </select>
+
+        <label>Time</label>
+        <input
+          type="text"
+          name="frequency"
+          value="{{ habit.frequency if mode=='edit' else '' }}"
+          required
+        >
+
+        <div class="btn-row">
+          <button class="save-btn" type="submit">Save</button>
+          <a class="cancel-btn" href="{{ url_for('main.habits_by_category', category=category) }}">Cancel</a>
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  document.getElementById("toggle-btn").onclick = () => {
+    document.getElementById("sidebar").classList.toggle("collapsed");
+  };
+</script>
+
+</body>
+</html>
