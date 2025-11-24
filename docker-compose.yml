@@ -8,13 +8,9 @@ services:
     container_name: habitapp
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
     environment:
       FLASK_APP: "app:create_app"
       FLASK_DEBUG: "1"
       FLASK_RUN_HOST: "0.0.0.0"
       FLASK_RUN_PORT: "5000"
-      RESEND_API_KEY: re_1grNHegX_JhSxqhXUrsfAD3QrFBu7RnLp
-
-    command: flask run
+      RESEND_API_KEY: my_resend_api_key_here

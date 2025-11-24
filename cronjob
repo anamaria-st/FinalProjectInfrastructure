@@ -1,1 +1,3 @@
-50 14 * * * /usr/local/bin/python /app/app/daily_notifications.py >> /var/log/cron.log 2>&1
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+50 15 * * * /usr/local/bin/python /app/app/daily_notifications.py >> /var/log/cron.log 2>&1
