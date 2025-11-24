@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/flower.png') }}">
+
   <title>{{ 'New ' + category_label + ' habit' if mode=='new' else 'Edit habit' }}</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/habit_form.css') }}">
