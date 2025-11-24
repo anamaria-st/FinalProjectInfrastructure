@@ -1,23 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/flower.png') }}">
-  <title>Register</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/flower.png') }}">
+  <title>Create account</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body>
   <div class="page">
-    <!-- puedes reutilizar la parte izquierda del login con la imagen -->
+    
+    <div class="left-panel">
+      <img
+        src="{{ url_for('static', filename='img/Plant.PNG') }}"
+        alt="Cute growing plant"
+        class="plant-image"
+      >
+    </div>
+
     <div class="right-panel">
       <div class="login-card">
-        <form method="POST" class="login-form">
-          <div class="field-group">
-            <a class="username">
-            <span class="icon">👤</span> {{ session["username"] }}
-            </a>
 
-            <input id="username" name="username" required>
+        <form method="POST" class="login-form">
+
+          <div class="field-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
           </div>
 
           <div class="field-group">
@@ -25,14 +43,29 @@
             <input type="password" id="password" name="password" required>
           </div>
 
+          <div class="field-group">
+            <label for="confirm_password">Confirm password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+          </div>
+
           {% if error %}
           <p class="error-msg">{{ error }}</p>
+          {% elif success %}
+          <p class="success-msg">Account created successfully 🌱</p>
           {% endif %}
 
-          <button type="submit" class="btn-login">Register</button>
+          <button type="submit" class="btn-login">Create account</button>
+
         </form>
+
+        <div class="register">
+          <p>I already have an account</p>
+          <a href="{{ url_for('main.login') }}">Log in</a>
+        </div>
+
       </div>
     </div>
+
   </div>
 </body>
 </html>

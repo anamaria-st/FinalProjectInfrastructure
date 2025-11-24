@@ -20,25 +20,31 @@ def index():
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
-    error = None
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "").strip()
+        username = request.form["username"].strip()
+        password = request.form["password"]
+        confirm = request.form["confirm_password"]
 
-        if not username or not password:
-            error = "Username and password are required"
-        elif User.query.filter_by(username=username).first():
-            error = "Username already exists"
-        else:
-            user = User(username=username)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-            # Auto login después de registrarse
-            session["user_id"] = user.id
-            return redirect(url_for("main.dashboard"))
+        # 1. Validar passwords iguales
+        if password != confirm:
+            return render_template("register.html", error="Passwords do not match")
 
-    return render_template("register.html", error=error)
+        # 2. Validar usuario repetido
+        existing = User.query.filter_by(username=username).first()
+        if existing:
+            return render_template("register.html", error="Username already exists")
+
+        # 3. Crear usuario nuevo
+        new_user = User(username=username)
+        new_user.set_password(password)  # tu modelo debe tener esta función
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return render_template("register.html", success=True)
+
+    return render_template("register.html")
+
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -313,7 +319,37 @@ def calendar_view():
 
 
     # Hábitos de hoy
-    todays_habits = habits
+    todays_habits = []
+    today = date.today()
+
+    for habit in habits:
+
+        # EVERY DAY
+        if habit.periodicity == "everyday":
+            todays_habits.append(habit)
+            continue
+
+        # EVERY WEEK
+        if habit.periodicity == "every week":
+            if today.strftime("%A").lower() == habit.frequency.lower():
+                todays_habits.append(habit)
+            continue
+
+        # EVERY MONTH
+        if habit.periodicity == "every month":
+
+            # obtener número de semana actual del mes
+            month_start = date(today.year, today.month, 1)
+            week_index_today = ((today.day - 1 + month_start.weekday()) // 7) + 1
+
+            # frequency → "1st week", "2nd week", etc.
+            habit_week = int(habit.frequency[0])
+
+            if week_index_today == habit_week:
+                todays_habits.append(habit)
+
+            continue
+
 
     return render_template(
         "calendar.html",
