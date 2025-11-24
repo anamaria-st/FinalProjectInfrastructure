@@ -6,6 +6,11 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/habit_form.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+  <!-- Fuente Poppins (asegura uniformidad tipográfica) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -18,20 +23,12 @@
     <button id="toggle-btn" class="toggle-btn">☰</button>
 
     <!-- USER INFO -->
-        <div class="user-section">
-        
-        <!-- Avatar con imagen -->
+    <div class="user-section">
         <div class="avatar">
-            <img 
-            src="/static/img/flower.png" 
-            alt="User avatar"
-            >
+            <img src="/static/img/flower.png" alt="User avatar">
         </div>
-
-        <!-- Username -->
         <span class="username">{{ session['username'] }}</span>
-
-        </div>
+    </div>
 
     <!-- MENU -->
     <nav class="menu">
@@ -40,13 +37,13 @@
         <span class="item-text">My habits</span>
       </a>
 
-      <a class="menu-item" href="#">
+      <a class="menu-item" href="{{ url_for('main.calendar_view') }}">
         <span class="item-icon">📅</span>
         <span class="item-text">Calendar</span>
       </a>
     </nav>
 
-    <!-- LOGOUT (abajo) -->
+    <!-- LOGOUT -->
     <a class="logout-section" href="{{ url_for('main.logout') }}">
       <span class="logout-icon">⏻</span>
       <span class="logout-text">Logout</span>
@@ -82,19 +79,15 @@
         </select>
 
         <label>Periodicity</label>
-        <select name="periodicity" required>
-          <option value="everyday">Every day</option>
-          <option value="every week">Every week</option>
-          <option value="every month">Every month</option>
+        <select name="periodicity" id="periodicity" required>
+            <option value="everyday" {% if mode=='edit' and habit.periodicity=='everyday' %}selected{% endif %}>Every day</option>
+            <option value="every week" {% if mode=='edit' and habit.periodicity=='every week' %}selected{% endif %}>Every week</option>
+            <option value="every month" {% if mode=='edit' and habit.periodicity=='every month' %}selected{% endif %}>Every month</option>
         </select>
 
-        <label>Time</label>
-        <input
-          type="text"
-          name="frequency"
-          value="{{ habit.frequency if mode=='edit' else '' }}"
-          required
-        >
+        <label>Time / Frequency</label>
+
+        <div id="dynamic-frequency"></div>
 
         <div class="btn-row">
           <button class="save-btn" type="submit">Save</button>
@@ -113,6 +106,50 @@
   document.getElementById("toggle-btn").onclick = () => {
     document.getElementById("sidebar").classList.toggle("collapsed");
   };
+</script>
+
+<script>
+function renderFrequencySelector() {
+    const periodicity = document.getElementById("periodicity").value;
+    const container = document.getElementById("dynamic-frequency");
+    const existing = "{{ habit.frequency if mode=='edit' else '' }}";
+
+    container.innerHTML = ""; 
+
+    if (periodicity === "everyday") {
+        container.innerHTML = `
+            <input type="time" name="frequency" value="${existing}" required>
+        `;
+    }
+
+    if (periodicity === "every week") {
+        container.innerHTML = `
+            <select name="frequency" required>
+                <option value="Monday" ${existing==="Monday"?"selected":""}>Monday</option>
+                <option value="Tuesday" ${existing==="Tuesday"?"selected":""}>Tuesday</option>
+                <option value="Wednesday" ${existing==="Wednesday"?"selected":""}>Wednesday</option>
+                <option value="Thursday" ${existing==="Thursday"?"selected":""}>Thursday</option>
+                <option value="Friday" ${existing==="Friday"?"selected":""}>Friday</option>
+                <option value="Saturday" ${existing==="Saturday"?"selected":""}>Saturday</option>
+                <option value="Sunday" ${existing==="Sunday"?"selected":""}>Sunday</option>
+            </select>
+        `;
+    }
+
+    if (periodicity === "every month") {
+        container.innerHTML = `
+            <select name="frequency" required>
+                <option value="1st week" ${existing==="1st week"?"selected":""}>1st week</option>
+                <option value="2nd week" ${existing==="2nd week"?"selected":""}>2nd week</option>
+                <option value="3rd week" ${existing==="3rd week"?"selected":""}>3rd week</option>
+                <option value="4th week" ${existing==="4th week"?"selected":""}>4th week</option>
+            </select>
+        `;
+    }
+}
+
+document.getElementById("periodicity").addEventListener("change", renderFrequencySelector);
+window.onload = renderFrequencySelector;
 </script>
 
 </body>

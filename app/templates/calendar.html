@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
@@ -13,33 +16,48 @@
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="sidebar expanded">
-        <button id="toggle-btn" class="toggle-btn">☰</button>
+<aside id="sidebar" class="sidebar expanded">
 
+    <button id="toggle-btn" class="toggle-btn">☰</button>
+
+    <!-- USER INFO -->
         <div class="user-section">
-            <div class="avatar">
-                <img src="/static/img/flower.png">
-            </div>
-            <span class="username">{{ session['username'] }}</span>
+        
+        <!-- Avatar con imagen -->
+        <div class="avatar">
+            <img 
+            src="/static/img/flower.png" 
+            alt="User avatar"
+            >
         </div>
 
-        <nav class="menu">
-            <a class="menu-item" href="{{ url_for('main.dashboard') }}">
-                <span class="item-icon">✔</span>
-                <span class="item-text">My habits</span>
-            </a>
+        <!-- Username -->
+        <span class="username">{{ session['username'] }}</span>
 
-            <a class="menu-item active" href="{{ url_for('main.calendar_view') }}">
-                <span class="item-icon">📅</span>
-                <span class="item-text">Calendar</span>
-            </a>
-        </nav>
+        </div>
 
-        <a class="logout-section" href="{{ url_for('main.logout') }}">
-            <span class="logout-icon">⏻</span>
-            <span class="logout-text">Logout</span>
-        </a>
-    </aside>
+
+
+    <!-- MENU -->
+    <nav class="menu">
+      <a class="menu-item" href="{{ url_for('main.dashboard') }}">
+        <span class="item-icon">✔</span>
+        <span class="item-text">My habits</span>
+      </a>
+
+      <a class="menu-item active" href="{{ url_for('main.calendar_view') }}">
+        <span class="item-icon">📅</span>
+        <span class="item-text">Calendar</span>
+      </a>
+    </nav>
+
+    <!-- LOGOUT (abajo) -->
+    <a class="logout-section" href="{{ url_for('main.logout') }}">
+      <span class="logout-icon">⏻</span>
+      <span class="logout-text">Logout</span>
+    </a>
+
+</aside>
 
     <!-- MAIN CONTENT -->
     <main class="calendar-area">
@@ -64,39 +82,47 @@
                 {% endfor %}
             </div>
 
-            <!-- Right panel: Today's habits -->
-            <div class="today-panel">
-                <h3 class="today-title">Today's habits</h3>
+<div class="calendar-right-column">
 
-                <div class="today-list">
+    <!-- Legend -->
+    <div class="legend">
+        <p><span class="legend-dot" style="background:#FFE5B4"></span> Physical health</p>
+        <p><span class="legend-dot" style="background:#9cc7f5"></span> Mental</p>
+        <p><span class="legend-dot" style="background:#76b34e"></span> Social</p>
+        <p><span class="legend-dot" style="background:#f48aa2"></span> Hobbies</p>
+    </div>
 
-                    {% for habit in todays_habits %}
-                    <form action="{{ url_for('main.toggle_habit', habit_id=habit.id) }}"
-                          method="POST" class="habit-row">
+    <!-- Today's habits title -->
+    <h3 class="today-title">Today's habits</h3>
 
-                        <button class="checkbox
-                            {% if habit.completions.filter_by(date=today).first() %}
-                                checked
-                            {% endif %}">
-                        </button>
+    <!-- Today's habits panel -->
+    <div class="today-panel">
 
-                        <span class="habit-text">
-                            {{ habit.name }}{% if habit.frequency %} - {{ habit.frequency }}{% endif %}
-                        </span>
-                    </form>
-                    {% endfor %}
+        <!-- Decorative plant -->
+        <img src="/static/img/plant2.png" alt="Plant icon" class="plant-decoration">
 
-                </div>
+        <div class="today-list">
+            {% for habit in todays_habits %}
+            <form action="{{ url_for('main.toggle_habit', habit_id=habit.id) }}"
+                  method="POST" class="habit-row">
 
-                <!-- Legend -->
-                <div class="legend">
-                    <p><span class="legend-dot" style="background:#f7c66f"></span> Physical health</p>
-                    <p><span class="legend-dot" style="background:#9cc7f5"></span> Mental</p>
-                    <p><span class="legend-dot" style="background:#76b34e"></span> Social</p>
-                    <p><span class="legend-dot" style="background:#f48aa2"></span> Hobbies</p>
-                </div>
+                <button class="checkbox
+                    {% if habit.completions.filter_by(date=today).first() %}
+                        checked
+                    {% endif %}">
+                </button>
 
-            </div>
+                <span class="habit-text">
+                    {{ habit.name }}{% if habit.frequency %} - {{ habit.frequency }}{% endif %}
+                </span>
+            </form>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
 
         </div>
 

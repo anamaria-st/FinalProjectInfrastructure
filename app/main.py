@@ -263,7 +263,7 @@ def calendar_view():
 
     # Mapa de colores por categoría
     category_colors = {
-        "physical": "#f7c66f",
+        "physical": "#FFE5B4",
         "mental": "#9cc7f5",
         "social": "#76b34e",
         "hobbies": "#f48aa2",
@@ -273,10 +273,44 @@ def calendar_view():
     dots = {d: [] for d in month_days}
 
     for habit in habits:
-        # VERY SIMPLE RULE: mostrar hábito TODOS los días
-        # (luego puedes agregar periodicidad real)
-        for d in month_days:
-            dots[d].append(category_colors.get(habit.category, "#000"))
+
+        # Every day → mark all days
+        if habit.periodicity == "everyday":
+            for d in month_days:
+                dots[d].append(category_colors[habit.category])
+            continue
+
+        # Every week → match weekday (Monday, Tuesday, etc.)
+        if habit.periodicity == "every week":
+            for d in month_days:
+                if d.strftime("%A").lower() == habit.frequency.lower():
+                    dots[d].append(category_colors[habit.category])
+            continue
+
+        # Every month → e.g., "3rd week"
+        if habit.periodicity == "every month":
+            week_number = int(habit.frequency[0])  # 1, 2, 3, 4, 5...
+            
+            # Calculate weeks
+            weeks = []
+            current_week = []
+            start_weekday = month_days[0].weekday()
+
+            for day in month_days:
+                if day.weekday() == 0 and current_week:
+                    weeks.append(current_week)
+                    current_week = []
+                current_week.append(day)
+            if current_week:
+                weeks.append(current_week)
+
+            # Place dot on any day in that week (usually Monday)
+            if week_number <= len(weeks):
+                target_day = weeks[week_number - 1][0]  # Monday of that week
+                dots[target_day].append(category_colors[habit.category])
+
+            continue
+
 
     # Hábitos de hoy
     todays_habits = habits

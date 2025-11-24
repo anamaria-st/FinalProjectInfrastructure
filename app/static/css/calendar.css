@@ -1,5 +1,5 @@
 .calendar-area {
-  padding: 40px;
+  padding: 80px;
   flex: 1;
 }
 
@@ -21,8 +21,8 @@
 /* Calendar grid */
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 70px);
-  grid-template-rows: repeat(5, 70px);
+  grid-template-columns: repeat(7, 80px);
+  grid-template-rows: repeat(5, 80px);
   gap: 12px;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .calendar-day.today {
-  outline: 3px solid #b7d86d;
+  outline: 3px solid #b7d86e;
 }
 
 .day-number {
@@ -98,7 +98,7 @@
 }
 
 .checkbox.checked {
-  background: #b7d86d url('/static/check.png') center center no-repeat;
+  background: #b7d86d url('/static/img/check.png') center center no-repeat;
   background-size: 16px;
 }
 
@@ -132,4 +132,41 @@ body {
 }
 body, input, select, button {
   font-family: "Poppins", sans-serif;
+}
+
+
+
+.today-panel {
+    background: #fadde1;
+    padding: 30px;
+    border-radius: 25px;
+    position: relative;  /* Necesario para que el decorativo se posicione dentro */
+    min-width: 290px;
+}
+
+.plant-decoration {
+    position: absolute;
+    right: -10px;      /* Ajusta según tu imagen */
+    bottom: -5px;      /* Ajusta según tu imagen */
+    width: 150px;      /* Tamaño ideal como en tu captura */
+    pointer-events: none; /* Que no bloquee clicks de los hábitos */
+}
+
+.calendar-container {
+  display: flex;
+  gap: 40px;
+}
+
+/* New column on the right */
+.calendar-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 280px;
+}
+
+/* Legend formatting */
+.legend p {
+  margin: 4px 0;
+  font-size: 15px;
 }
