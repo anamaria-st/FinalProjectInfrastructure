@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar expanded">
+        <button id="toggle-btn" class="toggle-btn">☰</button>
+
+        <div class="user-section">
+            <div class="avatar">
+                <img src="/static/img/flower.png">
+            </div>
+            <span class="username">{{ session['username'] }}</span>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item" href="{{ url_for('main.dashboard') }}">
+                <span class="item-icon">✔</span>
+                <span class="item-text">My habits</span>
+            </a>
+
+            <a class="menu-item active" href="{{ url_for('main.calendar_view') }}">
+                <span class="item-icon">📅</span>
+                <span class="item-text">Calendar</span>
+            </a>
+        </nav>
+
+        <a class="logout-section" href="{{ url_for('main.logout') }}">
+            <span class="logout-icon">⏻</span>
+            <span class="logout-text">Logout</span>
+        </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="calendar-area">
+
+        <!-- Top Title -->
+        <h2 class="month-title">{{ month }}</h2>
+
+        <div class="calendar-container">
+
+            <!-- Calendar boxes -->
+            <div class="calendar-grid">
+                {% for day in month_days %}
+                <div class="calendar-day {% if day == today %}today{% endif %}">
+                    <span class="day-number">{{ day.day }}</span>
+
+                    <div class="dots">
+                        {% for color in dots[day] %}
+                        <span class="dot" style="background: {{ color }}"></span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Right panel: Today's habits -->
+            <div class="today-panel">
+                <h3 class="today-title">Today's habits</h3>
+
+                <div class="today-list">
+
+                    {% for habit in todays_habits %}
+                    <form action="{{ url_for('main.toggle_habit', habit_id=habit.id) }}"
+                          method="POST" class="habit-row">
+
+                        <button class="checkbox
+                            {% if habit.completions.filter_by(date=today).first() %}
+                                checked
+                            {% endif %}">
+                        </button>
+
+                        <span class="habit-text">
+                            {{ habit.name }}{% if habit.frequency %} - {{ habit.frequency }}{% endif %}
+                        </span>
+                    </form>
+                    {% endfor %}
+
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <p><span class="legend-dot" style="background:#f7c66f"></span> Physical health</p>
+                    <p><span class="legend-dot" style="background:#9cc7f5"></span> Mental</p>
+                    <p><span class="legend-dot" style="background:#76b34e"></span> Social</p>
+                    <p><span class="legend-dot" style="background:#f48aa2"></span> Hobbies</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<script>
+document.getElementById("toggle-btn").onclick = () => {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+};
+</script>
+
+</body>
+</html>

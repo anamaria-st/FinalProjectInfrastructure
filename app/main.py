@@ -6,7 +6,9 @@ from flask import (
     url_for,
     session,
 )
-from .models import db, User, Habit
+from .models import db, User, Habit, HabitCompletion
+from datetime import date, datetime, timedelta
+import calendar
 
 bp = Blueprint("main", __name__)
 
@@ -240,4 +242,70 @@ def delete_habit(habit_id):
         db.session.commit()
 
     return redirect(url_for("main.habits_by_category", category=habit.category))
+
+@bp.route("/calendar")
+def calendar_view():
+    if not session.get("user_id"):
+        return redirect(url_for("main.login"))
+
+    user = current_user()
+
+    today = date.today()
+    year = today.year
+    month = today.month
+
+    # Crear matriz del mes
+    cal = calendar.Calendar(firstweekday=0)
+    month_days = list(cal.itermonthdates(year, month))
+
+    # Habits del usuario agrupados por categoría
+    habits = Habit.query.filter_by(user_id=user.id).all()
+
+    # Mapa de colores por categoría
+    category_colors = {
+        "physical": "#f7c66f",
+        "mental": "#9cc7f5",
+        "social": "#76b34e",
+        "hobbies": "#f48aa2",
+    }
+
+    # Puntos en calendario → por día
+    dots = {d: [] for d in month_days}
+
+    for habit in habits:
+        # VERY SIMPLE RULE: mostrar hábito TODOS los días
+        # (luego puedes agregar periodicidad real)
+        for d in month_days:
+            dots[d].append(category_colors.get(habit.category, "#000"))
+
+    # Hábitos de hoy
+    todays_habits = habits
+
+    return render_template(
+        "calendar.html",
+        today=today,
+        month_days=month_days,
+        year=year,
+        month=calendar.month_name[month],
+        dots=dots,
+        todays_habits=todays_habits,
+        category_colors=category_colors
+    )
+
+@bp.post("/habit/<int:habit_id>/toggle")
+def toggle_habit(habit_id):
+    today = date.today()
+
+    entry = HabitCompletion.query.filter_by(
+        habit_id=habit_id,
+        date=today
+    ).first()
+
+    if entry:
+        db.session.delete(entry)
+    else:
+        db.session.add(HabitCompletion(habit_id=habit_id, date=today))
+
+    db.session.commit()
+    return redirect(url_for("main.calendar_view"))
 

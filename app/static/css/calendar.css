@@ -1,0 +1,135 @@
+.calendar-area {
+  padding: 40px;
+  flex: 1;
+}
+
+/* Month title */
+.month-title {
+  font-size: 32px;
+  color: #4f4a42;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Layout */
+.calendar-container {
+  display: flex;
+  gap: 40px;
+}
+
+/* Calendar grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 70px);
+  grid-template-rows: repeat(5, 70px);
+  gap: 12px;
+}
+
+.calendar-day {
+  background: #d2d0d0;
+  border-radius: 10px;
+  padding: 6px;
+  position: relative;
+}
+
+.calendar-day.today {
+  outline: 3px solid #b7d86d;
+}
+
+.day-number {
+  font-size: 15px;
+  color: #555;
+}
+
+/* dots inside calendar */
+.dots {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Right panel */
+.today-panel {
+  background: #fadde1;
+  padding: 20px 30px;
+  border-radius: 20px;
+  min-width: 260px;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.today-title {
+  font-size: 22px;
+  color: #e45b7d;
+  margin-bottom: 10px;
+}
+
+.today-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 260px;
+  padding-right: 10px;
+}
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #615c57;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.checkbox.checked {
+  background: #b7d86d url('/static/check.png') center center no-repeat;
+  background-size: 16px;
+}
+
+.habit-text {
+  font-size: 16px;
+  color: #5a5450;
+}
+
+/* Legend */
+.legend {
+  margin-top: auto;
+}
+
+.legend p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+body {
+  margin: 0;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: var(--bg-main);
+}
+body, input, select, button {
+  font-family: "Poppins", sans-serif;
+}

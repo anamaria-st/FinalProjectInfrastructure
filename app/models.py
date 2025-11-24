@@ -33,3 +33,15 @@ class Habit(db.Model):
 
     # ejemplo: "Monday", "3rd week", "7pm", "8am"
     frequency = db.Column(db.String(50), nullable=False)
+    completions = db.relationship(
+        "HabitCompletion",
+        backref="habit",
+        lazy="dynamic",
+        cascade="all, delete-orphan"
+    )
+
+class HabitCompletion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'))
+    date = db.Column(db.Date, nullable=False)
+
