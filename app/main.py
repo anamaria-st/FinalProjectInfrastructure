@@ -6,6 +6,7 @@ from flask import (
     url_for,
     session,
 )
+import resend
 from .models import db, User, Habit, HabitCompletion
 from datetime import date, datetime, timedelta
 import calendar
@@ -85,10 +86,8 @@ def login_required():
 
 @bp.route("/dashboard")
 def dashboard():
-    if not session.get("user_id"):
-        return redirect(url_for("main.login"))
-
-    return render_template("dashboard.html")
+    user = User.query.get(session["user_id"])
+    return render_template("dashboard.html", user=user)
 
 
 @bp.route("/habits/<category>")
@@ -378,4 +377,19 @@ def toggle_habit(habit_id):
 
     db.session.commit()
     return redirect(url_for("main.calendar_view"))
+
+@bp.post("/toggle_notifications")
+def toggle_notifications():
+    user = User.query.get(session["user_id"])
+
+    # Si envían un email, actualizarlo
+    if request.form.get("email"):
+        user.notification_email = request.form["email"]
+
+    # Cambiar estado ON / OFF
+    user.email_notifications = not user.email_notifications
+
+    db.session.commit()
+    return redirect(url_for("main.dashboard"))
+
 

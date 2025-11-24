@@ -67,6 +67,30 @@
     <!-- MAIN CONTENT -->
     <main class="main-area">
 
+        <div class="notif-box">
+    <div class="notif-left">
+        <p class="notif-title">Email notifications</p>
+        <p class="notif-email">
+            {{ user.notification_email or 'No email set' }}
+        </p>
+    </div>
+
+    <form method="POST" action="{{ url_for('main.toggle_notifications') }}" class="notif-toggle-form">
+        <input 
+            type="email" 
+            name="email" 
+            class="notif-input" 
+            placeholder="your@email.com"
+            value="{{ user.notification_email or '' }}"
+        >
+
+        <button type="submit" class="toggle-btn-notif {{ 'on' if user.email_notifications else '' }}">
+            <span></span>
+        </button>
+    </form>
+</div>
+
+
       <div class="grid">
 
         <a href="{{ url_for('main.habits_by_category', category='physical') }}" class="card">

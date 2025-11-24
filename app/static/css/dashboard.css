@@ -273,3 +273,60 @@ body, input, select, button {
 .card img {
   max-width: 190px;
 }
+
+.notif-box {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+}
+
+.notif-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b6b5f;
+}
+
+.notif-email {
+  font-size: 13px;
+  color: #8b8b8b;
+}
+
+.notif-input {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+}
+
+.toggle-btn-notif {
+  width: 45px;
+  height: 22px;
+  border-radius: 20px;
+  border: none;
+  background: #ccc;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-btn-notif span {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  transition: .2s;
+}
+
+.toggle-btn-notif.on {
+  background: #83c63c;
+}
+
+.toggle-btn-notif.on span {
+  left: 24px;
+}

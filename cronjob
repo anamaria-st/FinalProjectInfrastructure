@@ -1,0 +1,1 @@
+50 14 * * * /usr/local/bin/python /app/app/daily_notifications.py >> /var/log/cron.log 2>&1
