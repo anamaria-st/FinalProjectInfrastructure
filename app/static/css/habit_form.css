@@ -69,11 +69,8 @@ input, select {
 a {
   text-decoration: none;
 }
-
-body {
+body, input, select, button, option  {
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
 }
-body, input, select, button {
-  font-family: "Poppins", sans-serif;
-}
+

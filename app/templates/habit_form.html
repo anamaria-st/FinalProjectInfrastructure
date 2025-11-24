@@ -13,20 +13,46 @@
 <div class="layout">
 
   <!-- Sidebar actualizado -->
-  <aside id="sidebar" class="sidebar expanded">
+<aside id="sidebar" class="sidebar expanded">
+
     <button id="toggle-btn" class="toggle-btn">☰</button>
 
-    <div class="user-section">
-      <div class="avatar"></div>
-      <a class="username">{{ session['username'] }}</a>
-    </div>
+    <!-- USER INFO -->
+        <div class="user-section">
+        
+        <!-- Avatar con imagen -->
+        <div class="avatar">
+            <img 
+            src="/static/img/flower.png" 
+            alt="User avatar"
+            >
+        </div>
 
+        <!-- Username -->
+        <span class="username">{{ session['username'] }}</span>
+
+        </div>
+
+    <!-- MENU -->
     <nav class="menu">
-      <a class="menu-item active" href="{{ url_for('main.dashboard') }}">✔ My habits</a>
-      <a class="menu-item" href="#">📅 Calendar</a>
-      <a class="menu-item logout" href="{{ url_for('main.logout') }}">🚪 Logout</a>
+      <a class="menu-item active" href="{{ url_for('main.dashboard') }}">
+        <span class="item-icon">✔</span>
+        <span class="item-text">My habits</span>
+      </a>
+
+      <a class="menu-item" href="#">
+        <span class="item-icon">📅</span>
+        <span class="item-text">Calendar</span>
+      </a>
     </nav>
-  </aside>
+
+    <!-- LOGOUT (abajo) -->
+    <a class="logout-section" href="{{ url_for('main.logout') }}">
+      <span class="logout-icon">⏻</span>
+      <span class="logout-text">Logout</span>
+    </a>
+
+</aside>
 
   <!-- MAIN -->
   <main class="form-area">

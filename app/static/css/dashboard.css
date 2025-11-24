@@ -26,42 +26,167 @@ body, input, select, button {
 
 /* SIDEBAR ------------------------------------------------ */
 
+/* =========================
+   SIDEBAR AJUSTADO
+   ========================= */
+
 .sidebar {
   width: 240px;
   background: var(--sidebar-bg);
-  padding: 20px;
-  min-height: 100vh;
+  padding: 24px 18px;
+  min-height: 95vh;
   transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 30px 30px 0;
+  position: relative;
 }
 
+/* Colapsado */
 .sidebar.collapsed {
-  width: 70px;
+  width: 80px;
 }
 
+/* Botón hamburguesa */
 .toggle-btn {
-  font-size: 28px;
+  font-size: 26px;
   background: none;
   border: none;
   cursor: pointer;
-  margin-bottom: 20px;
+  color: #4c4157;
+  margin-bottom: 18px;
 }
+
+/* --------------------------
+   USER SECTION
+   -------------------------- */
+
+.user-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.avatar {
+  width: 74px;
+  height: 74px;
+  border-radius: 18px; /* borde redondeado como tu tarjeta */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 16px;
+  color: #7b6e8e;
+  font-family: "Poppins";
+  font-weight: 500;
+  text-decoration: none;
+}
+
+
+
+/* Ocultar username en colapsado */
+.sidebar.collapsed .username {
+  display: none;
+}
+
+
+/* --------------------------
+   MENU ITEMS
+   -------------------------- */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.menu-item {
+  color: #7b6e8e;
+  padding: 12px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+/* Hover suave */
+.menu-item:hover {
+  background: #e5dde9;
+}
+
+.active {
+  background: #c6be6f;
+  color: white !important;
+}
+
+/* Colapsado: solo iconos */
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar.collapsed .menu-item .item-text {
+  display: none;
+}
+
+/* --------------------------
+   LOGOUT BUTTON (ABAJO)
+   -------------------------- */
+
+.logout-section {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  font-size: 16px;
+  color: #b04848;
+  text-decoration: none;
+}
+
+.logout-section:hover {
+  background: #f2d7d7;
+  border-radius: 14px;
+}
+
+/* Colapsado */
+.sidebar.collapsed .logout-section .logout-text {
+  display: none;
+}
+
+.sidebar.collapsed .logout-section {
+  justify-content: center;
+}
+
 
 /* user */
 .user-section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 6px;
   margin-bottom: 30px;
 }
 
-.sidebar.collapsed .user-section {
-  display: none;
-}
-
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: #ddd;
 }
@@ -71,6 +196,12 @@ body, input, select, button {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.sidebar.collapsed .user-section .username {
+  display: none;
+}
+
+
 
 /* menu */
 .menu {
@@ -138,9 +269,9 @@ body, input, select, button {
 .card h3 {
   color: var(--text-dark);
   font-size: 26px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .card img {
-  max-width: 180px;
+  max-width: 190px;
 }
