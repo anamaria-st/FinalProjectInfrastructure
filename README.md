@@ -190,11 +190,9 @@ Tests include:
 ---
 
 ## 11. Author
-**Ana María**  
+**Ana María Alvarez Suarez**  
+Computer Science MSc student
 Óbuda University  
 Modern Infrastructure — Final Project (2025)
 
 ---
-
-## 12. License
-MIT License
