@@ -1,116 +1,88 @@
-📘 README – Mini Habits App (Final Project, Modern Infrastructure)
-1. Overview
+# 🌱 Mini habits — Final Project (Modern Infrastructure)
 
-Mini Habits is a lightweight habit-tracking web application developed as the final project for the Modern Infrastructure course.
-It demonstrates the integration of containerized services, scheduled background tasks, automated email notifications, persistent storage, and CI/CD workflows while maintaining a clean and user-friendly design.
+## 1. Overview
+Mini habits is a lightweight habit-tracking web application built as the final project for the *Modern Infrastructure* course at Óbuda University.  
+The system demonstrates modern software deployment strategies including containerization, cron-based background jobs, automated email notifications, CI/CD pipelines, and a fully functioning Flask web application.
 
-The system allows users to:
+The app provides:
+- User registration and authentication  
+- A dashboard for managing habits across multiple categories  
+- Creation, editing, and deletion of daily, weekly, and monthly habits  
+- A visual calendar with category-based color coding  
+- Completion tracking for each day  
+- Automated daily email notifications using Resend  
+- Full Dockerization and deployment to Render  
 
-Register and authenticate securely
+---
 
-Create, edit, and categorize habits
+## 2. System Architecture
 
-Track daily, weekly, and monthly routines
+### Technologies Used
+| Layer | Technology |
+|-------|------------|
+| Backend | Python 3.12, Flask |
+| Frontend | HTML, CSS, Jinja2 |
+| Database | SQLite (SQLAlchemy ORM) |
+| Notifications | Resend API |
+| Scheduling | Linux Cron inside Docker |
+| Deployment | Docker & Docker Compose |
+| CI/CD | GitHub Actions |
+| Hosting | Render (Docker Deployment) |
 
-Visualize habits on a calendar
+### High-Level Architecture
+```
+Client  →  Flask Application  →  SQLite Database
+                 ↑
+                 |
+           Cron + Resend
+         (Email Scheduler)
+```
 
-Mark habits as completed
+---
 
-Receive automated daily email reminders
+## 3. Application Features
 
-Deploy the full application using Docker and Render
+### 3.1 Authentication
+- User registration with password confirmation  
+- Secure login using hashed passwords (Werkzeug)  
+- Prevention of duplicate usernames  
+- Optional email entry for notifications  
 
-2. System Architecture
-2.1 Technologies
-Component	Technology
-Backend	Python 3.12, Flask
-Database	SQLite (SQLAlchemy ORM)
-Frontend	HTML5, CSS3, Jinja2
-Email Service	Resend API
-Scheduling	Cron inside Docker
-Containerization	Docker & Docker Compose
-Deployment	Render (Docker)
-3. Features
-3.1 User Authentication
+### 3.2 Habits Dashboard
+- Four categories: Physical Health, Mental, Social, Hobbies  
+- Visual cards representing each category  
+- List of all habits per category  
 
-Registration with password confirmation
-
-Login using secure password hashing (Werkzeug)
-
-Prevention of duplicate usernames
-
-Optional email registration for notifications
-
-3.2 Dashboard
-
-Four habit categories: Physical, Mental, Social, Hobbies
-
-Visual cards representing each category
-
-List of user-specific habits per category
-
-3.3 Habit Management
-
+### 3.3 Habit Management
 Each habit includes:
+- Description  
+- Category  
+- Periodicity:
+  - Every day  
+  - Every week (weekday selector)  
+  - Every month (week-of-month selector)  
+- Dynamic frequency selector (UI updates automatically)  
+- Editing and deletion capabilities  
 
-Title/description
+### 3.4 Calendar View
+- Automatically generated monthly calendar  
+- Color-coded dots for each category  
+- Today’s habits listed on the right side  
+- Checkbox system to mark habits as completed  
+- Scrollable layout for many habits  
+- Category legend included for clarity  
 
-Category
+### 3.5 Email Notifications
+- Automated daily emails summarizing that day's habits  
+- Sent using Resend API  
+- Implemented through a cron-scheduled Python script  
+- Users can enable/disable notifications in the UI  
 
-Periodicity:
+---
 
-Every day
-
-Every week (weekday selector)
-
-Every month (week of month selector)
-
-Dynamic frequency UI selector based on periodicity
-
-Editing and deletion options
-
-3.4 Calendar Module
-
-Monthly calendar automatically generated
-
-Each day displays color-coded dot indicators for habits due that day
-
-Right-side panel lists all habits scheduled for the current day
-
-Habits can be marked as completed directly from the calendar
-
-Visual legend explaining color codes
-
-Scrollable layout for long lists
-
-3.5 Email Notification System
-
-Daily notification containing that day’s habits
-
-Implemented via:
-
-A Python worker (daily_notifications.py)
-
-Cron executing inside the container
-
-Resend API for sending transactional emails
-
-Optional toggle in the interface to enable/disable notifications
-
-3.6 CI/CD
-
-GitHub Actions pipeline includes:
-
-Dependency installation
-
-Tests via pytest
-
-Docker image build
-
-Render automatically redeploys on changes to the main branch
-
-4. Project Structure
-FinalProjectInfrastructure/
+## 4. Project Structure
+```
+/FinalProjectInfrastructure
 │
 ├── app/
 │   ├── __init__.py
@@ -124,106 +96,105 @@ FinalProjectInfrastructure/
 ├── docker-compose.yml
 ├── cronjob
 ├── requirements.txt
-├── pytest.ini
 ├── tests/
+│   └── test_app.py
 └── README.md
+```
 
-5. Deployment Instructions
-5.1 Local Execution (Docker)
-1. Clone the repository:
+---
+
+## 5. Running the Application Locally (Docker)
+
+### 5.1 Clone the Repository
+```
 git clone <repository_url>
 cd FinalProjectInfrastructure
+```
 
-2. Create an .env file:
+### 5.2 Create a `.env` File
+```
 RESEND_API_KEY=re_xxxxxxxxxxxxx
+```
 
-3. Build and run:
+### 5.3 Start Containers
+```
 docker compose up --build
-
-
-The application will be available at:
-
+```
+The application is available at:
+```
 http://localhost:5000
+```
 
-5.2 Deployment on Render
+---
 
-Create a new Web Service
+## 6. Deployment (Render)
 
-Select Deploy from Dockerfile
+1. Create a new **Web Service**  
+2. Select **Deploy from Dockerfile**  
+3. Add an environment variable:
+```
+RESEND_API_KEY=re_xxxxxx
+```
+4. Connect GitHub repository  
+5. Deployment triggers automatically on pushes to `main`  
 
-Add environment variable:
+---
 
-RESEND_API_KEY
+## 7. Cron-Based Email Scheduler
 
-Connect the GitHub repository
+### Cronjob File
+```
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+10 07 * * * /usr/local/bin/python /app/app/daily_notifications.py >> /var/log/cron.log 2>&1
+```
 
-Render triggers automatic deployments on push
+### Execution Flow
+1. Docker container launches `cron -f`  
+2. Cron executes `daily_notifications.py` at the scheduled hour  
+3. Script loads user habits, builds an email, and sends via Resend  
+4. Logs are stored in `/var/log/cron.log`  
 
-6. Cron-Based Email Notifications
-Cronjob File (cronjob):
-RESEND_API_KEY=re_xxxxxxxxxxxx
-00 05 * * * /usr/local/bin/python /app/app/daily_notifications.py >> /var/log/cron.log 2>&1
+---
 
-Execution Flow
-
-The container starts cron in foreground (cron -f)
-
-Cron loads the job file and executes the script at the scheduled hour
-
-The script:
-
-Creates an app context
-
-Queries user habits
-
-Sends email reminders using Resend
-
-Output is logged at /var/log/cron.log
-
-7. Testing
-
+## 8. Testing
 Run all tests:
-
+```
 pytest -v
+```
 
+Tests include:
+- Registration  
+- Login  
+- Habit creation  
+- Dashboard loading  
+- Basic model validation  
 
-Included tests validate:
+---
 
-Registration
+## 9. Security Considerations
+- Passwords hashed with Werkzeug  
+- Secrets stored in environment variables  
+- Cron explicitly loads environment before execution  
+- Input validation in forms  
+- No hard-coded credentials  
 
-Login
+---
 
-Duplicate user handling
+## 10. Future Improvements
+- Replace SQLite with PostgreSQL (production-ready)  
+- Add mobile-responsive UI  
+- Streak tracking and analytics  
+- Push notifications  
+- Multi-language support  
 
-Habit creation
+---
 
-Dashboard and routes
-
-8. Security Considerations
-
-Passwords hashed using Werkzeug
-
-API keys stored in environment variables
-
-Cronjob explicitly loads required variables
-
-No secrets stored in the codebase
-
-Form validation both client and server side
-
-9. Limitations and Future Work
-
-SQLite used for simplicity; production should support PostgreSQL
-
-Email frequency is fixed (daily)
-
-UI could be extended for mobile optimization
-
-Potential for analytics and habit streaks
-
-10. Author
-
-Ana María Alvarez
-Óbuda University
-Computer Science MSc Student
+## 11. Author
+**Ana María**  
+Óbuda University  
 Modern Infrastructure — Final Project (2025)
+
+---
+
+## 12. License
+MIT License
