@@ -12,6 +12,13 @@ jobs:
       # 1. Obtener el repo
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+
+      - name: Create .env file
+        run: |
+          echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
 
       # 2. Python + tests
       - name: Set up Python
@@ -39,7 +46,7 @@ jobs:
       - name: Deploy to VM
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
-            cd ~/app &&
+            cd ~/app/FinalProjectInfrastructure &&
             git pull origin main &&
             sudo docker-compose down || true &&
             sudo docker-compose up -d --build --force-recreate
