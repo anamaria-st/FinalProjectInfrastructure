@@ -35,13 +35,13 @@ jobs:
       - name: Copy app to VM
         run: |
           gcloud compute scp --recurse . \
-            habit-vm:~/app \
+            habits-vm:~/app \
             --zone=europe-west1-b
 
       - name: SSH into VM and rebuild
         run: |
-          gcloud compute ssh habit-vm --zone=europe-west1-b --command "
-            cd ~/app &&
+          gcloud compute ssh habits-vm --zone=europe-west1-b --command "
+            cd ~/app/FinalProjectInfrastructure &&
             docker compose down &&
             docker compose build &&
             docker compose up -d
