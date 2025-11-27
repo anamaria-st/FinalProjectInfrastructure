@@ -19,13 +19,22 @@ def test_login_page_loads(client):
 
 
 def test_login_success(client):
+    # Crear usuario en DB
+    from app.models import User, db
+    user = User(username="admin")
+    user.set_password("secret")
+    db.session.add(user)
+    db.session.commit()
+
+    # Hacer login
     response = client.post(
         "/login",
         data={"username": "admin", "password": "secret"},
-        follow_redirects=True,
+        follow_redirects=True
     )
+
     assert response.status_code == 200
-    assert b"Logged in successfully" in response.data
+    assert b"Dashboard" in response.data
 
 
 def test_login_failure(client):
