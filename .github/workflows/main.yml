@@ -46,8 +46,9 @@ jobs:
       - name: Deploy to VM
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
-            cd ~/app/FinalProjectInfrastructure &&
+            cd /home/anamaria19asz/app/FinalProjectInfrastructure &&
             git pull origin main &&
             sudo docker-compose down || true &&
             sudo docker-compose up -d --build --force-recreate
           "
+
