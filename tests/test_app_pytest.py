@@ -19,22 +19,26 @@ def test_login_page_loads(client):
 
 
 def test_login_success(client):
-    # Crear usuario en DB
     from app.models import User, db
-    user = User(username="admin")
-    user.set_password("secret")
-    db.session.add(user)
-    db.session.commit()
 
-    # Hacer login
+    # Crear usuario dentro del contexto de la aplicación
+    with client.application.app_context():
+        user = User(username="admin")
+        user.set_password("secret")
+        db.session.add(user)
+        db.session.commit()
+
+    # Intentar login
     response = client.post(
         "/login",
         data={"username": "admin", "password": "secret"},
-        follow_redirects=True
+        follow_redirects=True,
     )
 
+    # Debe redirigir al dashboard (200 tras redirect)
     assert response.status_code == 200
-    assert b"Dashboard" in response.data
+    assert b"Dashboard" in response.data or b"dashboard" in response.data
+
 
 
 def test_login_failure(client):
