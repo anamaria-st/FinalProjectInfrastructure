@@ -5,7 +5,6 @@ import resend
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "change-me-in-production"
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///habits.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
