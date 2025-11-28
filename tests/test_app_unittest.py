@@ -20,7 +20,7 @@ class LoginPageTestCase(unittest.TestCase):
         with self.app.app_context():
             db.create_all()
 
-        # Cliente de testing
+        # Cliente de test
         self.client = self.app.test_client()
 
     def tearDown(self):
