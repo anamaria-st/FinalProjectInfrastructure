@@ -1,25 +1,33 @@
 import unittest
-import pytest
 import sys
 import os
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from app import create_app
+
+from app import create_app, db
+
 
 class LoginPageTestCase(unittest.TestCase):
-    def setUp(self):
-        app = create_app({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
-    })
-        app.config["TESTING"] = True
-        self.client = app.test_client()
 
-    with app.app_context():
-        db.create_all()
+    def setUp(self):
+        # Crear aplicación en modo test con SQLite en memoria
+        self.app = create_app({
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+        })
+
+        # Crear tablas ANTES de ejecutar el test
+        with self.app.app_context():
+            db.create_all()
+
+        # Cliente de testing
+        self.client = self.app.test_client()
+
+    def tearDown(self):
+        pass
 
     def test_root_redirects_to_login(self):
         response = self.client.get("/")
-        # Flask usa 302 en el redirect
         self.assertIn(response.status_code, (301, 302))
 
     def test_register_text_is_present(self):
