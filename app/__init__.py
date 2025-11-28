@@ -4,12 +4,18 @@ import os
 import resend
 from flask_sqlalchemy import SQLAlchemy
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
 
-    db_password = os.getenv("DB_PASSWORD")
-    database_url = f"postgresql://habits_user:{db_password}@db:5432/habits_db"
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    if test_config is not None:
+        # Configuración especial para pruebas
+        app.config.update(test_config)
+    else:
+        db_password = os.getenv("DB_PASSWORD")
+        database_url = f"postgresql://habits_user:{db_password}@db:5432/habits_db"
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = "change-me"
     resend.api_key = os.getenv("RESEND_API_KEY")

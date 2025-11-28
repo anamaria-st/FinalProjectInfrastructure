@@ -7,9 +7,15 @@ from app import create_app
 
 class LoginPageTestCase(unittest.TestCase):
     def setUp(self):
-        app = create_app()
+        app = create_app({
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+    })
         app.config["TESTING"] = True
         self.client = app.test_client()
+
+    with app.app_context():
+        db.create_all()
 
     def test_root_redirects_to_login(self):
         response = self.client.get("/")

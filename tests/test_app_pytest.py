@@ -5,10 +5,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from app import create_app
 @pytest.fixture
 def client():
-    app = create_app()
-    app.config["TESTING"] = True
+    # Crear la aplicación con configuración de testing
+    app = create_app({
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+    })
+
+    with app.app_context():
+        db.create_all()
+
     with app.test_client() as client:
-        yield client
+        yield client 
 
 
 def test_login_page_loads(client):
