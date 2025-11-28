@@ -47,8 +47,9 @@ jobs:
       - name: Deploy to VM
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
-          git config --global --add safe.directory /opt/app/FinalProjectInfrastructure &&
-           cd /opt/app/FinalProjectInfrastructure &&
+            sudo git config --global --add safe.directory /opt/app/FinalProjectInfrastructure &&
+            sudo chown -R anamaria19asz:anamaria19asz /opt/app &&
+            cd /opt/app/FinalProjectInfrastructure &&
             git pull origin main &&
             sudo docker-compose down || true &&
             sudo docker-compose up -d --build --force-recreate
