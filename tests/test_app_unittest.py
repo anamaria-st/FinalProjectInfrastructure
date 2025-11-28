@@ -16,7 +16,7 @@ class LoginPageTestCase(unittest.TestCase):
             "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
         })
 
-        # Crear tablas ANTES de ejecutar el test
+        # Crear tablas
         with self.app.app_context():
             db.create_all()
 
