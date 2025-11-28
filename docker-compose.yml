@@ -3,9 +3,58 @@ version: "3.9"
 services:
   web:
     build: .
-    container_name: habitapp
+    container_name: habitapp-web
+    depends_on:
+      - db
     ports:
       - "5000:5000"
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql://habits_user:${DB_PASSWORD}@db:5432/habits_db
     volumes:
       - ./instance:/app/instance
+    restart: always
+    command: python -m flask run
+
+  cron:
+    build: .
+    container_name: habitapp-cron
+    depends_on:
+      - db
+    env_file: .env
+    volumes:
+      - ./cronjob:/etc/cron.d
+    environment:
+      DATABASE_URL: postgresql://habits_user:${DB_PASSWORD}@db:5432/habits_db
+    restart: always
+    command: cron -f
+
+  backup:
+    image: postgres:15
+    container_name: habitapp-backup
+    depends_on:
+      - db
+    env_file: .env
+    entrypoint: ["bash", "-c"]
+    command: >
+      "pg_dump -h db -U habits_user habits_db > /backups/db_backup.sql"
+    volumes:
+      - ./backups:/backups
+    environment:
+      PGPASSWORD: ${DB_PASSWORD}
+
+  db:
+    image: postgres:15
+    container_name: habitapp-db
+    restart: always
+    environment:
+      POSTGRES_USER: habits_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: habits_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:

@@ -2,11 +2,14 @@ from flask import Flask
 from .models import db
 import os
 import resend
+from flask_sqlalchemy import SQLAlchemy
 
 def create_app():
     app = Flask(__name__)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///habits.db"
+    db_password = os.getenv("DB_PASSWORD")
+    database_url = f"postgresql://habits_user:{db_password}@db:5432/habits_db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = "change-me"
     resend.api_key = os.getenv("RESEND_API_KEY")
