@@ -11,7 +11,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # Email notifications
+    # Email notification
     notification_email = db.Column(db.String(120))
     email_notifications = db.Column(db.Boolean, default=False)
 
