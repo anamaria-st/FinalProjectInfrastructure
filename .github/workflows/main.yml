@@ -19,6 +19,7 @@ jobs:
       - name: Create .env file
         run: |
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
       # 2. Python + tests
       - name: Set up Python
