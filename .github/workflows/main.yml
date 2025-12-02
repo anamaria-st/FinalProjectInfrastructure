@@ -48,7 +48,7 @@ jobs:
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
             whoami
-            sudo chown -R whoami:whoami /opt/app &&
+            sudo chown -R runner:runner /opt/app &&
             cd /opt/app/FinalProjectInfrastructure &&
             git pull origin main &&
             sudo docker-compose down || true &&
