@@ -17,6 +17,5 @@ ENV PYTHONUNBUFFERED=1 \
 
 EXPOSE 5000
 
-# Por default, el web service usa este CMD,
-# pero cron lo sobreescribe desde docker-compose.
+# Por default, el web service usa este CMD
 CMD ["python", "-m", "flask", "run"]
