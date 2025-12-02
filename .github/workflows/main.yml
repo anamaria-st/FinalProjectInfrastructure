@@ -46,11 +46,14 @@ jobs:
       # 4. Deploy — entrar a la VM, hacer git pull , reconstruir
       - name: Deploy to VM
         run: |
-          gcloud compute ssh habits-vm --zone=europe-west1-b --command "
-            sudo chown -R anamaria19asz:anamaria19asz /opt/app &&
-            cd /opt/app/FinalProjectInfrastructure &&
-            git pull origin main &&
-            sudo docker-compose down || true &&
-            sudo docker-compose up -d --build --force-recreate
-          "
+          gcloud compute ssh habits-vm \
+            --zone=europe-west1-b \
+            --ssh-flag="-l anamaria19asz" \
+            --command "
+              cd /opt/app/FinalProjectInfrastructure &&
+              git pull origin main &&
+              docker-compose down || true &&
+              docker-compose up -d --build --force-recreate
+            "
+
 
