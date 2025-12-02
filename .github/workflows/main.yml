@@ -43,12 +43,12 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
 
-      # 4. Deploy - entrar a la VM, hacer git pull , reconstruir
+      # 4. Deploy - entrar a la VM, git pull , reconstruir
       - name: Deploy to VM
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
             whoami
-            sudo chown -R anamaria19asz:anamaria19asz /opt/app &&
+            sudo chown -R whoami:whoami /opt/app &&
             cd /opt/app/FinalProjectInfrastructure &&
             git pull origin main &&
             sudo docker-compose down || true &&
