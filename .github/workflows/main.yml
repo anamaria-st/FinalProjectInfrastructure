@@ -43,7 +43,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
 
-      # 4. Deploy entrar a la VM, hacer git pull , reconstruir
+      # 4. Deploy - entrar a la VM, hacer git pull , reconstruir
       - name: Deploy to VM
         run: |
           gcloud compute ssh habits-vm --zone=europe-west1-b --command "
